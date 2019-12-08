@@ -23,7 +23,6 @@ export default class User {
     @get('/users')
     public async list(ctx: Koa.Context) {
         const data = await model.findAll()
-        console.log(data)
         ctx.body = getSuccessResult({ data })
     }
 
@@ -63,14 +62,32 @@ export default class User {
         ]
     })
     public async add(ctx: Koa.Context) {
-        // let data = await model.findAll()
-        // const id = (data.sort((a, b) => b.id - a.id)[0] || 0)
-        // console.log(id)
         const params = {
             name: ctx.request.body.name,
         }
         const data = await model.create(params)
         ctx.body = getSuccessResult({ msg: data === 0 ? "添加失败" : "" })
+    }
+    @post('/users/update', {
+        middlewares: [
+            async (ctx: Koa.Context, next: () => Promise<any>) => {
+                try {
+                    await userSchema.validateAsync(ctx.request.body)
+                    await next()
+                } catch (e) {
+                    ctx.body = getErrorResult(e)
+                }
+            }
+        ]
+    })
+    public async update(ctx: Koa.Context) {
+        const { name, id } = ctx.request.body
+        const data = await model.update({
+            name,
+        }, {
+            where: { id }
+        })
+        ctx.body = getSuccessResult({ msg: data === 0 ? "目标数据不存在" : "" })
     }
 
     // 删除数据

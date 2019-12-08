@@ -5,7 +5,7 @@ export default class User extends Model<User> {
     @Column({
         primaryKey: true,
         autoIncrement: true,
-        type: DataType.INTEGER,
+        type: DataType.UUID,
 
     })
     public id: number;
