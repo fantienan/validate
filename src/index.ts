@@ -33,10 +33,6 @@ app.use(timing())
 
 app.use(serve(`${__dirname}/public`))
 
-// app.use((ctx: Koa.Context) => {
-//     ctx.body = 'hello'
-// })
-
 // 加载中间件
 const router = load(resolve(__dirname, './routes'))
 app.use(async (ctx, next) => {
